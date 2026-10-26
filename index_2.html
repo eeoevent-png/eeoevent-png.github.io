@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Extraordinary</title>
+<meta name="description" content="Aplikasi tim Extraordinary Wedding Organizer">
+<meta name="theme-color" content="#0E0B08">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Extraordinary">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  html,body{margin:0;height:100%;background:#0E0B08;overflow:hidden}
+  iframe{position:fixed;inset:0;width:100%;height:100%;border:0;background:#0E0B08}
+  .muat{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+        color:#F3CF85;font:15px/1.4 system-ui,-apple-system,sans-serif;transition:opacity .4s}
+  .muat img{width:110px;height:110px;border-radius:24px}
+  .muat.hilang{opacity:0;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="muat" id="muat"><img src="apple-touch-icon.png" alt="Extraordinary Wedding Organizer"><div>Memuat aplikasi…</div></div>
+<iframe id="app" title="Aplikasi Extraordinary" allow="clipboard-write"
+  src="https://script.google.com/macros/s/AKfycbyHVQq6Wr4ahR1MSwL0DPgc7iUmSZuJmYKwMcUTEPW90DEiCuAqsVVrVDu3RrZ7U7Kl/exec"></iframe>
+<script>
+  // Simpanan login: aplikasi di dalam bingkai menitipkan token & nama ke sini (aman untuk iPhone).
+  var KUNCI = 'ext_simpanan_v1';
+  function ambil(){ try { return JSON.parse(localStorage.getItem(KUNCI) || '{}'); } catch (e) { return {}; } }
+  function taruh(o){ try { localStorage.setItem(KUNCI, JSON.stringify(o)); } catch (e) {} }
+  function asalSah(o){ return /^https:\/\/([a-z0-9-]+\.)*googleusercontent\.com$/i.test(o); }
+  window.addEventListener('message', function (e) {
+    if (!asalSah(e.origin)) return;
+    var d = e.data || {};
+    if (d.t === 'ext-minta') {
+      e.source.postMessage({ t: 'ext-isi', isi: ambil() }, e.origin);
+      document.getElementById('muat').classList.add('hilang');
+    } else if (d.t === 'ext-simpan' && typeof d.k === 'string' && /^crew_/.test(d.k)) {
+      var o = ambil();
+      if (d.v == null) delete o[d.k]; else o[d.k] = String(d.v).slice(0, 500);
+      taruh(o);
+    }
+  });
+  document.getElementById('app').addEventListener('load', function () {
+    setTimeout(function () { document.getElementById('muat').classList.add('hilang'); }, 1500);
+  });
+</script>
+</body>
+</html>
